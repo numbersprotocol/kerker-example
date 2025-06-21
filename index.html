@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人韌性與應變計畫儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony Neutrals -->
+    <!-- Application Structure Plan: The application is structured as a task-oriented dashboard with five main sections: Overview, Immediate Response, Long-Term Prep, Financial Fortification, and Action Roadmap. This non-linear structure allows the user to quickly access information based on their immediate needs (e.g., finding a shelter during an emergency) or long-term goals (e.g., reviewing financial strategies). It uses a sticky navigation bar for easy movement between these thematic sections. This design was chosen to transform a dense report into an actionable and less intimidating tool, prioritizing user flow and ease of information retrieval over mirroring the original document's linear format. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: 3-5 Year Plan -> Goal: Organize/Change -> Viz: Interactive Timeline (Gantt-style Bar Chart) -> Interaction: Visual overview of tasks and phases -> Justification: More engaging and easier to grasp progress than a text list -> Library: Chart.js (Canvas).
+        - Report Info: Shelter, Pet Carrier, Exchange, Visa Tables -> Goal: Compare -> Viz: Styled HTML Cards/Tables -> Interaction: Clear, scannable presentation of options -> Justification: Improves readability and visual appeal over standard tables, especially on mobile devices -> Library/Method: Tailwind CSS.
+        - Report Info: Go-Bag Lists -> Goal: Inform/Organize -> Viz: Tabbed Checklists -> Interaction: User can toggle between different bag lists -> Justification: Segments complex information into manageable chunks, making it easier to process -> Library/Method: HTML/CSS/JS.
+        - Report Info: Risk Analysis Text -> Goal: Inform -> Viz: Key takeaway cards with icons -> Interaction: Static display -> Justification: Highlights the most critical information from dense paragraphs for quick awareness -> Library/Method: HTML/Tailwind CSS with Unicode icons.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .nav-btn {
+            transition: all 0.3s ease;
+            border-bottom: 4px solid transparent;
+        }
+        .nav-btn.active {
+            border-bottom-color: #0d9488; /* teal-600 */
+            color: #0f766e; /* teal-700 */
+        }
+        .section-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #0d9488; /* teal-600 */
+            color: white;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+                max-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <h1 class="text-2xl md:text-3xl font-bold text-teal-800 text-center">個人韌性與應變計畫儀表板</h1>
+        </div>
+        <nav id="main-nav" class="bg-slate-100 flex justify-center items-center text-sm md:text-base overflow-x-auto">
+            <button data-target="overview" class="nav-btn active flex-shrink-0 px-4 py-3 font-semibold text-gray-600">綜覽</button>
+            <button data-target="immediate-response" class="nav-btn flex-shrink-0 px-4 py-3 font-semibold text-gray-600">立即應變</button>
+            <button data-target="long-term-prep" class="nav-btn flex-shrink-0 px-4 py-3 font-semibold text-gray-600">長期準備</button>
+            <button data-target="financial" class="nav-btn flex-shrink-0 px-4 py-3 font-semibold text-gray-600">財務鞏固</button>
+            <button data-target="roadmap" class="nav-btn flex-shrink-0 px-4 py-3 font-semibold text-gray-600">行動藍圖</button>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-6">
+        
+        <section id="overview" class="content-section">
+            <h2 class="text-2xl font-bold mb-4 text-teal-700">計畫總覽：化焦慮為賦權</h2>
+            <div class="section-card p-6 mb-6">
+                <p class="text-lg leading-relaxed">本計畫的核心是建立一個強大的系統，以應對各種潛在的極端情況。這是一份為期3至5年的系統性實施方案，目標是逐步增強您自主應對危機的能力，確保自身、親人及寵物的安全。</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="section-card p-6">
+                    <h3 class="text-xl font-bold mb-3 flex items-center"><span class="text-2xl mr-3">📍</span>風險評估：台北</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-red-600">地緣政治與軍事風險</h4>
+                            <p>圓山捷運站鄰近國防部總部等多個戰略目標，風險顯著較高。在軍事衝突時，應變策略必須優先考慮「水平疏散」，迅速離開市中心。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-blue-600">自然災害風險</h4>
+                            <p>大同區屬中級土壤液化潛勢區，強震可能損壞基礎設施。計畫疏散路線時，應優先選擇地勢較高、遠離河岸的路徑。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-card p-6">
+                    <h3 class="text-xl font-bold mb-3 flex items-center"><span class="text-2xl mr-3">🏡</span>潛在避難點：台南</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700">機會與風險並存</h4>
+                            <p>台南房產可作為國內避險資產，但鄰近空軍基地亦帶來局部軍事風險。置產時應利用「航空噪音防制區圖」進行評估，選擇位於噪音管制區之外的地區。</p>
+                        </div>
+                         <div>
+                            <h4 class="font-semibold text-green-700">長期潛力</h4>
+                            <p>「南台南副都心」等開發計畫顯示出長期增長潛力，若能避開高風險區，仍是理想的資產配置與遷居選項。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="immediate-response" class="content-section hidden">
+            <h2 class="text-2xl font-bold mb-4 text-teal-700">立即應變：疏散與機動性</h2>
+            <div class="section-card p-6 mb-6">
+                 <h3 class="text-xl font-bold mb-3">會合與疏散協議</h3>
+                 <p class="mb-4">當通訊可能中斷時，一個清晰、預先同意的行動協議至關重要。這能將「我會去接你」的模糊意圖，轉化為大幅提高成功會合機率的具體步驟。</p>
+                 <ul class="list-decimal list-inside space-y-2">
+                    <li><b>主要計畫：</b>您騎車前往長輩家。</li>
+                    <li><b>備案一 (通訊正常，路線中斷)：</b>致電長輩，指示其留在原地，您將尋找替代路線。</li>
+                    <li><b>備案二 (通訊中斷)：</b>長輩在原地等待特定時間 (例如4小時)。若您未抵達，長輩應徒步前往預先約定的「主要集合點」，若主要集合點被破壞，則前往「次要集合點」。</li>
+                </ul>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">避難包內容清單 (Go-Bags)</h3>
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-2 flex border-b">
+                            <button class="tab-btn active flex-1 p-2 rounded-md font-semibold" data-tab="personal-bag">個人避難包</button>
+                            <button class="tab-btn flex-1 p-2 rounded-md font-semibold" data-tab="dog-bag">犬用避難包</button>
+                            <button class="tab-btn flex-1 p-2 rounded-md font-semibold" data-tab="elder-bag">長輩備用包</button>
+                        </div>
+                        <div class="p-4">
+                            <div id="personal-bag" class="tab-content space-y-2">
+                                <p class="text-sm text-gray-600 mb-2">目標10公斤以下，極致輕量化，優先選用多功能物品。</p>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">月亮杯/衛生棉、固態盥洗用品</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">飲用水 (1.5L) 與 隨身濾水器</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">高能量口糧 (3日份)</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">急救包、頭燈、行動電源</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">紙本地圖、重要證件影本 (含加密USB)</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">現金 (新台幣與小額美金)</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">多功能工具刀、手套、高音哨、保暖毯</label>
+                            </div>
+                            <div id="dog-bag" class="tab-content space-y-2 hidden">
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">乾糧 (3日份，預先分裝)</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">可折疊食碗與水碗</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">飲用水 (1L)</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">牽繩、胸背帶、嘴套 (重要)</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">拾便袋、疫苗紀錄影本、鎮靜零食</label>
+                            </div>
+                            <div id="elder-bag" class="tab-content space-y-2 hidden">
+                               <p class="text-sm text-gray-600 mb-2">預先放置於長輩家中門口旁，用鮮豔袋子標示。</p>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">常規藥物 (7日份，附清晰標籤)</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">處方籤影本、醫生聯絡資訊</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">身分證/健保卡影本、現金</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">簡易收音機與電池</label>
+                                <label class="flex items-center"><input type="checkbox" class="mr-2 h-4 w-4">備用眼鏡、緊急聯絡人清單</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">摩托車疏散運載方案 (15.5kg犬隻)</h3>
+                    <div class="space-y-4">
+                        <div class="section-card p-4">
+                            <h4 class="font-bold text-lg">K9 Sport Sack Plus 2</h4>
+                            <p class="text-sm"><b>最大載重:</b> 18 kg</p>
+                            <p class="text-sm"><b>優點:</b> 載重符合需求，人體工學設計佳，是理想選擇。</p>
+                            <p class="text-sm"><b>購買管道:</b> 代理商、蝦皮、Amazon國際運送。</p>
+                        </div>
+                        <div class="section-card p-4">
+                            <h4 class="font-bold text-lg">ibiyaya 挑戰者 (FC2345)</h4>
+                            <p class="text-sm"><b>最大載重:</b> 12 kg (需自行評估風險)</p>
+                            <p class="text-sm"><b>優點:</b> 台灣品牌易購買，結構堅固，或可承受15.5kg重量。</p>
+                             <p class="text-sm"><b>購買管道:</b> 官方網站、momo、PChome。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-xl font-bold mb-4">圓山捷運站附近避難所</h3>
+                 <div class="overflow-x-auto bg-white rounded-lg shadow">
+                    <table class="w-full text-sm text-left text-gray-600">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">建築名稱/地址</th>
+                                <th scope="col" class="px-6 py-3">容納人數</th>
+                                <th scope="col" class="px-6 py-3">距離(約)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <td class="px-6 py-4 font-medium">圓山大飯店 (玉門街1號)</td>
+                                <td class="px-6 py-4">2,752</td>
+                                <td class="px-6 py-4">800公尺</td>
+                            </tr>
+                             <tr class="bg-gray-50 border-b">
+                                <td class="px-6 py-4 font-medium">大龍峒社教館 (酒泉街235號)</td>
+                                <td class="px-6 py-4">1,020</td>
+                                <td class="px-6 py-4">600公尺</td>
+                            </tr>
+                             <tr class="bg-white border-b">
+                                <td class="px-6 py-4 font-medium">大同運動中心 (承德路三段287號)</td>
+                                <td class="px-6 py-4">1,500</td>
+                                <td class="px-6 py-4">750公尺</td>
+                            </tr>
+                             <tr class="bg-gray-50 border-b">
+                                <td class="px-6 py-4 font-medium">中山區行政中心 (中山北路三段181號)</td>
+                                <td class="px-6 py-4">2,215</td>
+                                <td class="px-6 py-4">1.2公里</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="px-6 py-4 font-medium">市立大同高中 (哈密街59巷)</td>
+                                <td class="px-6 py-4">3,300</td>
+                                <td class="px-6 py-4">1公里</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">注意：台灣多數避難所為臨時掩蔽點，非長期生存設計。首要目標仍是疏散至安全區域。請務必下載「警政服務APP」並預載離線地圖。</p>
+            </div>
+
+        </section>
+
+        <section id="long-term-prep" class="content-section hidden">
+            <h2 class="text-2xl font-bold mb-4 text-teal-700">長期準備：居家固守策略</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="section-card p-6">
+                    <h3 class="text-xl font-bold mb-3">🛡️ 以家為堡壘</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>在窗戶貼上防爆膜。</li>
+                        <li>選擇家中結構最堅固、遠離窗戶的房間作為「安全室」。</li>
+                        <li>準備書籍、桌遊等離線娛樂。</li>
+                        <li>與可信賴的鄰居建立「夥伴系統」。</li>
+                    </ul>
+                </div>
+                <div class="section-card p-6">
+                    <h3 class="text-xl font-bold mb-3">💧 生存保障 (至少三週)</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><b>食物:</b> 儲備罐頭、能量棒、堅果、果乾等無需烹飪的品項。</li>
+                        <li><b>飲水:</b> 每人每日至少3公升 (2L飲用, 1L盥洗)。21天需63公升。</li>
+                        <li>使用「滾動式」庫存系統，定期更換。</li>
+                        <li>購買高品質的濾水器作為備援。</li>
+                    </ul>
+                </div>
+                <div class="section-card p-6">
+                    <h3 class="text-xl font-bold mb-3">🔌 能源與通訊</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><b>個人:</b> 高容量行動電源。</li>
+                        <li><b>家庭:</b> 可攜式儲能電站與可折疊太陽能板。</li>
+                        <li><b>烹飪:</b> 卡式瓦斯爐與足量瓦斯罐。</li>
+                        <li><b>通訊:</b> 手搖/電池供電收音機、預載離線地圖。</li>
+                    </ul>
+                </div>
+            </div>
+             <div class="mt-8">
+                <h3 class="text-xl font-bold mb-4">🐶 犬隻物資：降低對進口飼料的依賴</h3>
+                <div class="section-card p-6">
+                    <p class="mb-4">封鎖可能切斷進口飼料供應，提前將犬隻飲食轉換為高品質的台灣在地品牌是關鍵的風險管理策略。這應作為一個主動的、為期一年的飲食轉換計畫來執行。</p>
+                    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="border border-gray-200 rounded-lg p-3 text-center">
+                            <h4 class="font-bold">倍力 (Blue Bay)</h4>
+                            <p class="text-sm">使用在地食材，品管嚴格。</p>
+                        </div>
+                         <div class="border border-gray-200 rounded-lg p-3 text-center">
+                            <h4 class="font-bold">瑞威 (Real Power)</h4>
+                             <p class="text-sm">以均衡營養配方聞名。</p>
+                        </div>
+                         <div class="border border-gray-200 rounded-lg p-3 text-center">
+                            <h4 class="font-bold">陪心寵糧 (nu4PET)</h4>
+                             <p class="text-sm">提供客製化配方選項。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="financial" class="content-section hidden">
+            <h2 class="text-2xl font-bold mb-4 text-teal-700">財務鞏固與資產多元化</h2>
+            <div class="section-card p-6 mb-6">
+                <p>整體策略建立在多元化、流動性和避免過度槓桿的基礎上。目標是建立一個能夠抵禦單一國家經濟或銀行體系崩潰的財務結構。加密貨幣和海外資產是相輔相成的工具，前者可作為在資本管制下轉移資金的橋樑，後者則是終極的避險策略。</p>
+            </div>
+             <div class="grid lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">數位避風港：加密貨幣</h3>
+                    <div class="space-y-4">
+                       <div class="bg-white p-4 rounded-lg shadow-inner border">
+                          <h4 class="font-bold mb-2">入場：台灣合規交易所</h4>
+                           <div class="overflow-x-auto">
+                              <table class="w-full text-sm">
+                                <thead class="bg-gray-50"><tr><th class="p-2 text-left">交易所</th><th class="p-2 text-left">手續費</th><th class="p-2 text-left">安全特性</th></tr></thead>
+                                <tbody>
+                                  <tr class="border-t">
+                                    <td class="p-2 font-medium">MAX</td><td class="p-2">0.05%/0.15%</td><td class="p-2">遠東銀行信託</td>
+                                  </tr>
+                                  <tr class="border-t bg-gray-50">
+                                    <td class="p-2 font-medium">ACE</td><td class="p-2">0.1%/0.1%</td><td class="p-2">凱基銀行信託</td>
+                                  </tr>
+                                   <tr class="border-t">
+                                    <td class="p-2 font-medium">BitoPro</td><td class="p-2">0.1%/0.2%</td><td class="p-2">台灣老牌交易所</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                           </div>
+                       </div>
+                        <div class="bg-white p-4 rounded-lg shadow-inner border">
+                          <h4 class="font-bold mb-2">資產安全：硬體錢包 (自我託管)</h4>
+                          <p class="text-sm">將資產從交易所轉移到冷錢包，能防止交易所倒閉或資產被扣押。</p>
+                          <ul class="list-disc list-inside mt-2">
+                              <li><b>Ledger:</b> 用戶界面友好，適合初學者。</li>
+                              <li><b>Trezor:</b> 開源軟體，受安全專家青睞。</li>
+                          </ul>
+                       </div>
+                    </div>
+                </div>
+                 <div>
+                    <h3 class="text-xl font-bold mb-4">有形資產：國際多元化</h3>
+                     <div class="overflow-x-auto bg-white p-4 rounded-lg shadow-inner border">
+                         <table class="w-full text-sm">
+                             <thead class="bg-gray-50">
+                                 <tr>
+                                     <th class="p-2 text-left">項目</th>
+                                     <th class="p-2 text-left">馬來西亞 MM2H</th>
+                                     <th class="p-2 text-left">泰國精英簽證</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr class="border-t"><td class="p-2 font-medium">財務要求</td><td class="p-2">15萬美元定存</td><td class="p-2">90萬泰銖會費</td></tr>
+                                 <tr class="border-t bg-gray-50"><td class="p-2 font-medium">簽證效期</td><td class="p-2">5年 (可續簽)</td><td class="p-2">5年</td></tr>
+                                 <tr class="border-t"><td class="p-2 font-medium">居住義務</td><td class="p-2">每年90天</td><td class="p-2">無</td></tr>
+                                 <tr class="border-t bg-gray-50"><td class="p-2 font-medium">可攜帶家屬</td><td class="p-2">可</td><td class="p-2">不可</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+                 </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="content-section hidden">
+            <h2 class="text-2xl font-bold mb-4 text-teal-700">行動藍圖：可執行的準備路線圖</h2>
+            <div class="section-card p-6">
+                <p class="mb-6">本計畫的最終目標是將準備工作分解為一個可管理、循序漸進的時間表，以避免因任務繁重而卻步。這將使「準備」成為一個動態、持續演進的生活習慣。</p>
+                <div class="chart-container">
+                    <canvas id="roadmap-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('#main-nav button');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    contentSections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.remove('hidden');
+                        } else {
+                            section.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        if (content.id === tabId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const roadmapCtx = document.getElementById('roadmap-chart');
+            if(roadmapCtx) {
+                new Chart(roadmapCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [
+                            '風險評估 & 避難包', 
+                            '摩托車/寵物/急救訓練',
+                            '居家儲備 & 離網能源',
+                            '加密貨幣基礎操作',
+                            '建立加密貨幣部位',
+                            '研究/決定海外方案',
+                            '年度檢討與演練'
+                        ],
+                        datasets: [{
+                            label: '第一年',
+                            data: [
+                                {x: [0, 6], y: '風險評估 & 避難包'},
+                                {x: [6, 12], y: '摩托車/寵物/急救訓練'}
+                            ],
+                            backgroundColor: '#14b8a6', // teal-500
+                            borderColor: '#0f766e', // teal-700
+                            borderWidth: 1,
+                            barPercentage: 0.5
+                        }, {
+                            label: '第二年',
+                            data: [
+                                {x: [12, 18], y: '居家儲備 & 離網能源'},
+                                {x: [18, 24], y: '加密貨幣基礎操作'}
+                            ],
+                            backgroundColor: '#2dd4bf', // teal-400
+                            borderColor: '#14b8a6', // teal-500
+                            borderWidth: 1,
+                            barPercentage: 0.5
+                        }, {
+                            label: '第三至五年',
+                             data: [
+                                {x: [24, 60], y: '建立加密貨幣部位'},
+                                {x: [24, 60], y: '研究/決定海外方案'},
+                                {x: [12, 60], y: '年度檢討與演練'},
+                            ],
+                            backgroundColor: '#5eead4', // teal-300
+                            borderColor: '#2dd4bf', // teal-400
+                            borderWidth: 1,
+                            barPercentage: 0.5
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '三年準備路線圖 (單位：月)',
+                                font: { size: 16 }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const d = context.raw;
+                                        return `${context.dataset.label}: 第 ${d.x[0]} 至 ${d.x[1]} 個月`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                min: 0,
+                                max: 60,
+                                stacked: false,
+                                title: {
+                                    display: true,
+                                    text: '時間 (月)'
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                ticks: {
+                                    autoSkip: false,
+                                    callback: function(value, index, values) {
+                                        const label = this.getLabelForValue(value);
+                                        if (label.length > 16) {
+                                            return label.match(/.{1,16}/g);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
